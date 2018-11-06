@@ -50,7 +50,7 @@ def should_shoot_enemy(body):
     you = body["you"]
     youX = you["x"]
     youY = you["y"]
-    if not can_shoot(enemy["x"], enemy["y"], body["you"]["direction"], body, youX, youY, body["you"]["weapon_range"]):
+    if not can_shoot(enemy["x"], enemy["y"], body["you"]["direction"], body, youX, youY, body["you"]["weaponRange"]):
         return False
 
     your_weapon_power = you["weaponDamage"]
@@ -61,7 +61,7 @@ def should_shoot_enemy(body):
 
     enemy_strength = enemy["strength"]
     enemy_weapon_range = enemy["weaponRange"]
-    enemy_weapon_power = enemy["weaponPower"]
+    enemy_weapon_power = enemy["weaponDamage"]
     enemy_ammo = enemy["ammo"]
 
     if not can_shoot(youX, youY, enemy["direction"], body, enemy["x"], enemy["y"], enemy_weapon_range):
@@ -88,14 +88,14 @@ def enemy_in_range(enemy):
 
 def should_flee(body):
     you = body["you"]
-    enemy = body["enemy"][0]
+    enemy = body["enemies"][0]
 
-    if can_shoot(you["x"], you["y]"], enemy["direction"], body, enemy["x"], enemy["y"], enemy["weaponRange"]):
+    if can_shoot(you["x"], you["y"], enemy["direction"], body, enemy["x"], enemy["y"], enemy["weaponRange"]):
         your_turn = 1
         if enemy["direction"] == you["direction"]:
             your_turn = 2
 
-        return not will_win_shootout(you["weaponPower"], enemy["weaponPower"], you["strength"], enemy["strength"], your_turn)
+        return not will_win_shootout(you["weaponDamage"], enemy["weaponDamage"], you["strength"], enemy["strength"], your_turn)
 
     return False
 
@@ -139,9 +139,9 @@ def bonus_in_range(body):
 def how_to_engage(body):
     you = body["you"]
     enemy = body["enemies"][0]
-    if not will_win_shootout(you["weaponPower"], enemy["weaponPower"], you["strength"], enemy["strength"]):
+    if not will_win_shootout(you["weaponDamage"], enemy["weaponDamage"], you["strength"], enemy["strength"]):
         return where_to_flee(body)
-    if not will_win_shootout(you["weaponPower"], enemy["weaponPower"], you["strength"], enemy["strength"], 1):
+    if not will_win_shootout(you["weaponDamage"], enemy["weaponDamage"], you["strength"], enemy["strength"], 1):
         return rotate_towards_enemy(body)
     return move_towards_enemy(body)
 
@@ -153,7 +153,7 @@ def rotate_towards_enemy(body):
     return "rotate-right"
 
 def where_to_flee(body):
-    return "retreat"
+    return "advance"
 
 def in_fire(body):
     you = body["you"]
@@ -191,3 +191,84 @@ def doesCellContainWall(walls, x, y, mapwidth, mapheight):
         if wall["x"] == x and wall["y"] == y:
             return True
     return False
+
+
+def main():
+    body = {
+  "matchId": "d191f1cc-c179-4779-b649-af5e9dab198e",
+  "mapWidth": 20,
+  "mapHeight": 20,
+  "wallDamage": 30,
+  "penguinDamage": 50,
+  "weaponDamage": 60,
+  "visibility": 5,
+  "weaponRange": 5,
+  "you": {
+    "direction": "top",
+    "x": 29,
+    "y": 8,
+    "strength": 300,
+    "ammo": 995,
+    "status": "firing",
+    "targetRange": 4,
+    "weaponRange": 5,
+    "weaponDamage": 60
+  },
+  "enemies": [
+    {
+      "direction": "bottom",
+      "x": 29,
+      "y": 4,
+      "strength": 240,
+      "ammo": 1000,
+      "status": "hit",
+      "weaponRange": 5,
+      "weaponDamage": 60
+    }
+  ],
+  "walls": [
+    {
+      "x": 16,
+      "y": 7,
+      "strength": 200
+    },
+    {
+      "x": 18,
+      "y": 7,
+      "strength": 200
+    },
+    {
+      "x": 17,
+      "y": 7,
+      "strength": 200
+    },
+    {
+      "x": 15,
+      "y": 7,
+      "strength": 200
+    }
+  ],
+  "bonusTiles": [
+   {
+      "x": 12,
+      "y": 5,
+      "type": "weapon-range",
+      "value": 1
+  },
+  {
+      "x": 15,
+      "y": 11,
+      "type": "strength",
+      "value": 3
+  },
+  {
+      "x": 17,
+      "y": 10,
+      "type": "weapon-damage",
+      "value": 4
+  }],
+  "suddenDeath": 10,
+  "fire": []
+}
+    print(chooseAction(body))
+
