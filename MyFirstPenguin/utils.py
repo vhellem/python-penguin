@@ -13,6 +13,11 @@ ROTATE_DOWN =  {"top" : ROTATE_LEFT, "bottom" : PASS, "right" : ROTATE_RIGHT ,"l
 ROTATE_RIGHT = {"top" : ROTATE_RIGHT, "bottom" : ROTATE_LEFT, "right" : PASS ,"left" : ROTATE_LEFT }
 ROTATE_LEFT = {"top" : ROTATE_LEFT, "bottom" : ROTATE_RIGHT, "right" : ROTATE_RIGHT,"left" : PASS }
 
+MOVE_UP =  {"top" : ADVANCE, "bottom" : ROTATE_LEFT, "right" : ROTATE_LEFT ,"left" : ROTATE_RIGHT }
+MOVE_DOWN =  {"top" : ROTATE_LEFT, "bottom" : ADVANCE, "right" : ROTATE_RIGHT ,"left" : ROTATE_LEFT }
+MOVE_RIGHT = {"top" : ROTATE_RIGHT, "bottom" : ROTATE_LEFT, "right" : ADVANCE ,"left" : ROTATE_LEFT }
+MOVE_LEFT = {"top" : ROTATE_LEFT, "bottom" : ROTATE_RIGHT, "right" : ROTATE_RIGHT,"left" : ADVANCE }
+
 def can_shoot(x, y, currentDir, body, youX, youY, weapon_range):
 
     if x!=youX and y!=youY:
@@ -139,7 +144,7 @@ def random_move_without_wall(body):
 
 def move_towards(tuple, body):
     x, y = tuple
-    return "advance"
+    return moveTowardsPoint(body, x, y)
 
 def select_best_bonus(body):
     return body["bonusTiles"][0]["x"], body["bonusTiles"][0]["y"]
@@ -159,7 +164,8 @@ def how_to_engage(body):
     return move_towards_enemy(body)
 
 def move_towards_enemy(body):
-    return ADVANCE
+    enemy = body["enemies"][0]
+    return moveTowardsPoint(body, enemy["x"], enemy["y"])
 
 
 
@@ -339,3 +345,21 @@ def main():
     print(choose_penguin_action(body))
 
 
+def moveTowardsPoint(body, pointX, pointY):
+    penguinPositionX = body["you"]["x"]
+    penguinPositionY = body["you"]["y"]
+    plannedAction = PASS
+    bodyDirection = body["you"]["direction"]
+
+    if penguinPositionX < pointX:
+        plannedAction =  MOVE_RIGHT[bodyDirection]
+    elif penguinPositionX > pointX:
+        plannedAction = MOVE_LEFT[bodyDirection]
+    elif penguinPositionY < pointY:
+        plannedAction = MOVE_DOWN[bodyDirection]
+    elif penguinPositionY > pointY:
+        plannedAction = MOVE_UP[bodyDirection]
+
+    if plannedAction == ADVANCE and wallInFrontOfPenguin(body):
+        plannedAction = SHOOT
+    return plannedAction
