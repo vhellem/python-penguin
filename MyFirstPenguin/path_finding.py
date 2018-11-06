@@ -4,54 +4,62 @@ ADVANCE = "advance"
 RETREAT = "retreat"
 directions = ["top", "left", "right", "bottom"]
 
-def up_down_edge(G, x, y, d):
+def get_path(q, parent):
+    last_parent = q
+    while parent.get(q, None):
+        last_parent = q
+        q = parent[q]
+    return last_parent
+
+def neighbours(q, not_allowed):
+    for n in all_neighbours(q):
+        if not (n[0], n[1]) in not_allowed:
+            yield n
+
+def all_neighbours(q):
+    x, y, d = q
     if d == "top":
-        G.add_edge((x, y, d), (x, y-1, d), ACTION=ADVANCE)
-        G.add_edge((x, y, d), (x, y+1, d), ACTION=RETREAT)
-        G.add_edge((x, y, d), (x, y, "left"), ACTION=ROTATE_LEFT)
-        G.add_edge((x, y, d), (x, y, "right"), ACTION=ROTATE_RIGHT)
-    else:
-        G.add_edge((x, y, d), (x, y-1, d), ACTION=RETREAT)
-        G.add_edge((x, y, d), (x, y+1, d), ACTION=ADVANCE)
-        G.add_edge((x, y, d), (x, y, "left"), ACTION=ROTATE_RIGHT)
-        G.add_edge((x, y, d), (x, y, "right"), ACTION=ROTATE_LEFT)
+        yield (x, y-1, d)
+        yield (x, y+1, d)
+        yield (x, y, "left")
+        yield (x, y, "right")
+    elif d == "bottom":
+        yield (x, y-1, d)
+        yield (x, y+1, d)
+        yield (x, y, "left")
+        yield (x, y, "right")
+    elif d == "right":
+        yield (x-1, y, d)
+        yield (x+1, y, d)
+        yield (x, y, "top")
+        yield (x, y, "bottom")
+    elif d == "left":
+        yield (x-1, y, d)
+        yield (x+1, y, d)
+        yield (x, y, "top")
+        yield (x, y, "bottom")
 
-def right_left_edge(G, x, y, d):
-    if d == "right":
-        G.add_edge((x, y, d), (x-1, y, d), ACTION=RETREAT)
-        G.add_edge((x, y, d), (x+1, y, d), ACTION=ADVANCE)
-        G.add_edge((x, y, d), (x, y, "top"), ACTION=ROTATE_RIGHT)
-        G.add_edge((x, y, d), (x, y, "bottom"), ACTION=ROTATE_LEFT)
-    else:
-        G.add_edge((x, y, d), (x-1, y, d), ACTION=ADVANCE)
-        G.add_edge((x, y, d), (x+1, y, d), ACTION=RETREAT)
-        G.add_edge((x, y, d), (x, y, "top"), ACTION=ROTATE_LEFT)
-        G.add_edge((x, y, d), (x, y, "bottom"), ACTION=ROTATE_RIGHT)
-
-def path_finding_ignore_target_direction(f, t):
+def path_finding_ignore_target_direction(f, t, not_allowed):
     x, y, d = f
     x_to, y_to = t
-    G = nx.Graph()
-    for x_coor in range(x-5, x+5):
-        for y_coor in range(y-5, y+5):
-            up_down_edge(G, x_coor, y_coor, "top")
-            up_down_edge(G, x_coor, y_coor, "bottom")
-            right_left_edge(G, x_coor, y_coor, "left")
-            right_left_edge(G, x_coor, y_coor, "right")
 
-    possibilities = [nx.shortest_path(G, f, (x_to, y_to, d)) for d in directions]
-    best = min(possibilities)
-    first_edge = G.get_edge_data(best[0], best[1])
+    parent = {}
+    visited = {}
+    frontier = [(x, y, d)]
+    while len(frontier) > 0:
+        q = frontier.pop(0)
+        if (q[0], q[1]) == (x_to, y_to):
+            return get_path(q, parent)
+        visited[q] = True
+        for n in neighbours(q, not_allowed):
+            if not visited.get(n, False):
+                parent[n] = q
+                frontier.append(n)
+    return None
 
-    return first_edge["ACTION"]
+f_node = (1,0,"top")
+t_node = (1,2)
 
-
-
-
-
-
-
-
-
-
-
+while (f_node[0], f_node[1]) != t_node:
+    print(f_node)
+    f_node = path_finding_ignore_target_direction(f_node, t_node, [(0,1),(1,1),(2,1)]) 
