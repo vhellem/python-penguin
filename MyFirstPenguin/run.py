@@ -77,6 +77,11 @@ def chooseAction(body):
     x = you["x"]
     y = you["y"]
     d = you["direction"]
+    not_allowed = set()
+    for w in body["walls"]:
+        not_allowed.add((w["x"], w["y"]))
+    for f in body["fire"]:
+        not_allowed.add((f["x"], f["y"]))
     #action = path_finding_ignore_target_direction((x,y,d), (2,2)) #choose_penguin_action(body)
     action = choose_penguin_action(body)
     return action
