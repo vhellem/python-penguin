@@ -1,6 +1,18 @@
 from math import ceil
 import random
 
+ROTATE_LEFT = "rotate-left"
+ROTATE_RIGHT = "rotate-right"
+ADVANCE = "advance"
+RETREAT = "retreat"
+SHOOT = "shoot"
+PASS = "pass"
+
+ROTATE_UP =  {"top" : PASS, "bottom" : ROTATE_LEFT, "right" : ROTATE_LEFT ,"left" : ROTATE_RIGHT }
+ROTATE_DOWN =  {"top" : ROTATE_LEFT, "bottom" : PASS, "right" : ROTATE_RIGHT ,"left" : ROTATE_LEFT }
+ROTATE_RIGHT = {"top" : ROTATE_RIGHT, "bottom" : ROTATE_LEFT, "right" : PASS ,"left" : ROTATE_LEFT }
+ROTATE_LEFT = {"top" : ROTATE_LEFT, "bottom" : ROTATE_RIGHT, "right" : ROTATE_RIGHT,"left" : PASS }
+
 def can_shoot(x, y, currentDir, body, youX, youY, weapon_range):
 
     if x!=youX and y!=youY:
@@ -147,11 +159,38 @@ def how_to_engage(body):
     return move_towards_enemy(body)
 
 def move_towards_enemy(body):
-    return "advance"
+    return ADVANCE
+
 
 
 def rotate_towards_enemy(body):
-    return "rotate-right"
+    you = body["you"]
+    enemy = body["enemies"][0]
+
+    if you["x"] > enemy["x"]:
+        if you["y"] > enemy["y"]:
+            possibleMoves = (ROTATE_LEFT[you["direction"]], ROTATE_UP["direction"])
+            if enemy["direction"] == "down":
+                return possibleMoves[0]
+            return possibleMoves[1]
+        else:
+            possibleMoves = (ROTATE_LEFT[you["direction"]], ROTATE_DOWN["direction"])
+            if enemy["direction"] == "up":
+                return possibleMoves[0]
+            return possibleMoves[1]
+    else:
+        if you["y"] > enemy["y"]:
+            possibleMoves = (ROTATE_RIGHT[you["direction"]], ROTATE_UP["direction"])
+            if enemy["direction"] == "down":
+                return possibleMoves[0]
+            return possibleMoves[1]
+        else:
+            possibleMoves = (ROTATE_RIGHT[you["direction"]], ROTATE_DOWN["direction"])
+            if enemy["direction"] == "up":
+                return possibleMoves[0]
+            return possibleMoves[1]
+
+
 
 def where_to_flee(body):
     return "advance"
