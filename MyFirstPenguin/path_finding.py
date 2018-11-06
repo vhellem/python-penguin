@@ -1,5 +1,3 @@
-import networkx as nx
-
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
 ADVANCE = "advance"
@@ -46,3 +44,14 @@ def path_finding_ignore_target_direction(f, t):
     first_edge = G.get_edge_data(best[0], best[1])
 
     return first_edge["ACTION"]
+
+
+
+
+
+
+
+
+
+
+
