@@ -96,3 +96,13 @@ def __main__():
     responseBody.close()
 
 __main__()
+
+#body = {
+#        "you": {
+#            "x": 5,
+#            "y": 5,
+#            "direction": "top"
+#            },
+#}
+
+#print(chooseAction(body))
