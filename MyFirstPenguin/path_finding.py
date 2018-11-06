@@ -1,4 +1,4 @@
-import mynetworkx as nx
+import networkx as nx
 
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
