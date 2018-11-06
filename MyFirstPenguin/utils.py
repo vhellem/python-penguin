@@ -1,6 +1,23 @@
 from math import ceil
 import random
 
+ROTATE_LEFT = "rotate-left"
+ROTATE_RIGHT = "rotate-right"
+ADVANCE = "advance"
+RETREAT = "retreat"
+SHOOT = "shoot"
+PASS = "pass"
+
+ROTATE_UP =  {"top" : PASS, "bottom" : ROTATE_LEFT, "right" : ROTATE_LEFT ,"left" : ROTATE_RIGHT }
+ROTATE_DOWN =  {"top" : ROTATE_LEFT, "bottom" : PASS, "right" : ROTATE_RIGHT ,"left" : ROTATE_LEFT }
+GET_RIGHT = {"top" : ROTATE_RIGHT, "bottom" : ROTATE_LEFT, "right" : PASS ,"left" : ROTATE_LEFT }
+GET_LEFT = {"top" : ROTATE_LEFT, "bottom" : ROTATE_RIGHT, "right" : ROTATE_RIGHT,"left" : PASS }
+
+MOVE_UP =  {"top" : ADVANCE, "bottom" : ROTATE_LEFT, "right" : ROTATE_LEFT ,"left" : ROTATE_RIGHT }
+MOVE_DOWN =  {"top" : ROTATE_LEFT, "bottom" : ADVANCE, "right" : ROTATE_RIGHT ,"left" : ROTATE_LEFT }
+MOVE_RIGHT = {"top" : ROTATE_RIGHT, "bottom" : ROTATE_LEFT, "right" : ADVANCE ,"left" : ROTATE_LEFT }
+MOVE_LEFT = {"top" : ROTATE_LEFT, "bottom" : ROTATE_RIGHT, "right" : ROTATE_RIGHT,"left" : ADVANCE }
+
 def can_shoot(x, y, currentDir, body, youX, youY, weapon_range):
 
     if x!=youX and y!=youY:
@@ -127,7 +144,7 @@ def random_move_without_wall(body):
 
 def move_towards(tuple, body):
     x, y = tuple
-    return "advance"
+    return moveTowardsPoint(body, x, y)
 
 def select_best_bonus(body):
     return body["bonusTiles"][0]["x"], body["bonusTiles"][0]["y"]
@@ -147,14 +164,53 @@ def how_to_engage(body):
     return move_towards_enemy(body)
 
 def move_towards_enemy(body):
-    return "advance"
+    enemy = body["enemies"][0]
+    return moveTowardsPoint(body, enemy["x"], enemy["y"])
+
 
 
 def rotate_towards_enemy(body):
-    return "rotate-right"
+    you = body["you"]
+    enemy = body["enemies"][0]
+
+    if you["x"] > enemy["x"]:
+        if you["y"] > enemy["y"]:
+            possibleMoves = (GET_LEFT[you["direction"]], ROTATE_UP["direction"])
+            if enemy["direction"] == "down":
+                return possibleMoves[0]
+            return possibleMoves[1]
+        else:
+            possibleMoves = (GET_LEFT[you["direction"]], ROTATE_DOWN["direction"])
+            if enemy["direction"] == "up":
+                return possibleMoves[0]
+            return possibleMoves[1]
+    else:
+        if you["y"] > enemy["y"]:
+            possibleMoves = (GET_RIGHT[you["direction"]], ROTATE_UP["direction"])
+            if enemy["direction"] == "down":
+                return possibleMoves[0]
+            return possibleMoves[1]
+        else:
+            possibleMoves = (GET_RIGHT[you["direction"]], ROTATE_DOWN["direction"])
+            if enemy["direction"] == "up":
+                return possibleMoves[0]
+            return possibleMoves[1]
+
+
 
 def where_to_flee(body):
-    return "advance"
+    action = RETREAT
+    you = body["you"]
+    enemy = body["enemies"][0]
+    if wallBehindPenguin(body) or (you["direction"] == enemy["direction"] and can_shoot(you["x"], you["y"], enemy["direction"], body, enemy["x"], enemy["y"], enemy["weaponRange"])):
+        action = random.choice([ROTATE_LEFT, ROTATE_RIGHT])
+
+
+    return action
+
+
+
+
 
 def in_fire(body):
     you = body["you"]
@@ -183,6 +239,23 @@ def wallInFrontOfPenguin(body):
         xValueToCheckForWall -= 1
     elif bodyDirection == "right":
         xValueToCheckForWall += 1
+    return doesCellContainWall(body["walls"], xValueToCheckForWall, yValueToCheckForWall, mapwidth, mapheight)
+
+def wallBehindPenguin(body):
+    xValueToCheckForWall = body["you"]["x"]
+    yValueToCheckForWall = body["you"]["y"]
+    bodyDirection = body["you"]["direction"]
+    mapwidth = body["mapWidth"]
+    mapheight = body["mapHeight"]
+
+    if bodyDirection == "top":
+        yValueToCheckForWall += 1
+    elif bodyDirection == "bottom":
+        yValueToCheckForWall -= 1
+    elif bodyDirection == "left":
+        xValueToCheckForWall += 1
+    elif bodyDirection == "right":
+        xValueToCheckForWall -= 1
     return doesCellContainWall(body["walls"], xValueToCheckForWall, yValueToCheckForWall, mapwidth, mapheight)
 
 def doesCellContainWall(walls, x, y, mapwidth, mapheight):
@@ -272,3 +345,21 @@ def main():
     print(choose_penguin_action(body))
 
 
+def moveTowardsPoint(body, pointX, pointY):
+    penguinPositionX = body["you"]["x"]
+    penguinPositionY = body["you"]["y"]
+    plannedAction = PASS
+    bodyDirection = body["you"]["direction"]
+
+    if penguinPositionX < pointX:
+        plannedAction =  MOVE_RIGHT[bodyDirection]
+    elif penguinPositionX > pointX:
+        plannedAction = MOVE_LEFT[bodyDirection]
+    elif penguinPositionY < pointY:
+        plannedAction = MOVE_DOWN[bodyDirection]
+    elif penguinPositionY > pointY:
+        plannedAction = MOVE_UP[bodyDirection]
+
+    if plannedAction == ADVANCE and wallInFrontOfPenguin(body):
+        plannedAction = SHOOT
+    return plannedAction
