@@ -78,7 +78,7 @@ if req_params_query == "info":
 elif req_params_query == "command":    
     body = json.loads(open(env["req"], "r").read())
     returnObject["command"] = ROTATE_RIGHT  # chooseAction(body)
-    time.sleep(0.1)
+    time.sleep(2)
 
 response["body"] = returnObject
 responseBody.write(json.dumps(response))
