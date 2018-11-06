@@ -1,8 +1,12 @@
 import os
 import json
+import time
 import random
 import math
-import utils as utils
+from utils import chooseAction
+
+#from path_finding import path_finding_ignore_target_direction
+
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
 ADVANCE = "advance"
@@ -60,14 +64,18 @@ def moveTowardsCenterOfMap(body):
     centerPointY = math.floor(body["mapHeight"] / 2)
     return moveTowardsPoint(body, centerPointX, centerPointY)
 
-def chooseAction(body):
+def action_from_tile_to_tile(f, t):
+    x, y, d = f
+    x_to, y_to, d_to = t
 
-    action = PASS
-    action = moveTowardsCenterOfMap(body)
+
+def chooseAction(body):
+    action = chooseAction(body)
     return action
 
+
 env = os.environ
-req_params_query = env['REQ_PARAMS_QUERY']
+req_params_query = "command" #env['REQ_PARAMS_QUERY']
 responseBody = open(env['res'], 'w')
 
 response = {}
@@ -75,7 +83,7 @@ returnObject = {}
 if req_params_query == "info":
     returnObject["name"] = "Pingu"
     returnObject["team"] = "Team Python"
-elif req_params_query == "command":    
+elif req_params_query == "command":
     body = json.loads(open(env["req"], "r").read())
     returnObject["command"] = chooseAction(body)
 

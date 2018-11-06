@@ -126,7 +126,7 @@ def random_move_without_wall(body):
         return choice
 
 def move_towards(x, y, body):
-    pass
+    return "advance"
 
 def select_best_bonus(body):
     return body["bonusTiles"][0]["x"], body["bonusTiles"][0]["y"]
@@ -146,14 +146,14 @@ def how_to_engage(body):
     return move_towards_enemy(body)
 
 def move_towards_enemy(body):
-    pass
+    return "advance"
 
 
 def rotate_towards_enemy(body):
-    return "pass"
+    return "rotate-right"
 
 def where_to_flee(body):
-    pass
+    return "retreat"
 
 def in_fire(body):
     you = body["you"]
