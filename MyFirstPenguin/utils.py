@@ -100,7 +100,7 @@ def should_flee(body):
     return False
 
 
-def chooseAction(body):
+def choose_penguin_action(body):
     if in_fire(body):
         return escape_from_fire(body)
 
@@ -269,6 +269,6 @@ def main():
   "suddenDeath": 10,
   "fire": []
 }
-    print(chooseAction(body))
+    print(choose_penguin_action(body))
 
 

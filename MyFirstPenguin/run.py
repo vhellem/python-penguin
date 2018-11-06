@@ -3,7 +3,7 @@ import json
 import time
 import random
 import math
-from utils import chooseAction
+from utils import choose_penguin_action
 
 #from path_finding import path_finding_ignore_target_direction
 
@@ -70,8 +70,10 @@ def action_from_tile_to_tile(f, t):
 
 
 def chooseAction(body):
-    action = chooseAction(body)
+    action = choose_penguin_action(body)
     return action
+
+
 
 
 env = os.environ
@@ -80,6 +82,8 @@ responseBody = open(env['res'], 'w')
 
 response = {}
 returnObject = {}
+
+
 if req_params_query == "info":
     returnObject["name"] = "Pingu"
     returnObject["team"] = "Team Python"
