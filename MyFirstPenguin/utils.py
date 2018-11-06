@@ -272,5 +272,3 @@ def main():
     print(chooseAction(body))
 
 
-main()
-
