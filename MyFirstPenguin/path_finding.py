@@ -10,21 +10,25 @@ def up_down_edge(G, x, y, d):
     if d == "top":
         G.add_edge((x, y, d), (x, y-1, d), ACTION=ADVANCE)
         G.add_edge((x, y, d), (x, y+1, d), ACTION=RETREAT)
+        G.add_edge((x, y, d), (x, y, "left"), ACTION=ROTATE_LEFT)
+        G.add_edge((x, y, d), (x, y, "right"), ACTION=ROTATE_RIGHT)
     else:
         G.add_edge((x, y, d), (x, y-1, d), ACTION=RETREAT)
         G.add_edge((x, y, d), (x, y+1, d), ACTION=ADVANCE)
-    G.add_edge((x, y, d), (x, y, "left"))
-    G.add_edge((x, y, d), (x, y, "right"))
+        G.add_edge((x, y, d), (x, y, "left"), ACTION=ROTATE_RIGHT)
+        G.add_edge((x, y, d), (x, y, "right"), ACTION=ROTATE_LEFT)
 
 def right_left_edge(G, x, y, d):
     if d == "right":
         G.add_edge((x, y, d), (x-1, y, d), ACTION=RETREAT)
         G.add_edge((x, y, d), (x+1, y, d), ACTION=ADVANCE)
+        G.add_edge((x, y, d), (x, y, "top"), ACTION=ROTATE_RIGHT)
+        G.add_edge((x, y, d), (x, y, "bottom"), ACTION=ROTATE_LEFT)
     else:
         G.add_edge((x, y, d), (x-1, y, d), ACTION=ADVANCE)
         G.add_edge((x, y, d), (x+1, y, d), ACTION=RETREAT)
-    G.add_edge((x, y, d), (x, y, "top"))
-    G.add_edge((x, y, d), (x, y, "bottom"))
+        G.add_edge((x, y, d), (x, y, "top"), ACTION=ROTATE_LEFT)
+        G.add_edge((x, y, d), (x, y, "bottom"), ACTION=ROTATE_RIGHT)
 
 def path_finding_ignore_target_direction(f, t):
     x, y, d = f
@@ -39,6 +43,6 @@ def path_finding_ignore_target_direction(f, t):
 
     possibilities = [nx.shortest_path(G, f, (x_to, y_to, d)) for d in directions]
     best = min(possibilities)
-    first_edge = G.get_edge_data(f, best[0])
+    first_edge = G.get_edge_data(best[0], best[1])
 
-    return first_edge
+    return first_edge["ACTION"]
