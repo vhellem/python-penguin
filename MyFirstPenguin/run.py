@@ -2,7 +2,7 @@ import os
 import json
 import random
 import math
-
+import utils as utils
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
 ADVANCE = "advance"
@@ -61,6 +61,7 @@ def moveTowardsCenterOfMap(body):
     return moveTowardsPoint(body, centerPointX, centerPointY)
 
 def chooseAction(body):
+
     action = PASS
     action = moveTowardsCenterOfMap(body)
     return action

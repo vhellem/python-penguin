@@ -1,5 +1,5 @@
 from math import ceil
-
+import random
 
 def can_shoot(x, y, currentDir, body, youX, youY, weapon_range):
 
@@ -70,15 +70,13 @@ def should_shoot_enemy(body):
     return will_win_shootout(your_weapon_power, enemy_weapon_power, your_strength, enemy_strength)
 
 
-def will_win_shootout(your_power, enemy_power, your_strength, enemy_strength, your_turn = True):
+def will_win_shootout(your_power, enemy_power, your_strength, enemy_strength, your_turn = 0):
 
     number_of_shoots_needed_to_kill_enemy = ceil(enemy_strength / your_power)
     number_of_shoots_needed_to_kill_you = ceil(your_strength / enemy_power)
 
-    if your_turn:
-        return number_of_shoots_needed_to_kill_enemy <= number_of_shoots_needed_to_kill_you
+    return number_of_shoots_needed_to_kill_enemy <= number_of_shoots_needed_to_kill_you-your_turn
 
-    return number_of_shoots_needed_to_kill_enemy < number_of_shoots_needed_to_kill_you
 
 
 
@@ -88,4 +86,108 @@ def enemy_in_range(enemy):
 
 
 
+def should_flee(body):
+    you = body["you"]
+    enemy = body["enemy"][0]
 
+    if can_shoot(you["x"], you["y]"], enemy["direction"], body, enemy["x"], enemy["y"], enemy["weaponRange"]):
+        your_turn = 1
+        if enemy["direction"] == you["direction"]:
+            your_turn = 2
+
+        return not will_win_shootout(you["weaponPower"], enemy["weaponPower"], you["strength"], enemy["strength"], your_turn)
+
+    return False
+
+
+def chooseAction(body):
+    if in_fire(body):
+        return escape_from_fire(body)
+
+    if enemy_in_range(body["enemies"][0]):
+        if should_shoot_enemy(body):
+            return "shoot"
+        if should_flee(body):
+            return where_to_flee(body)
+
+        return how_to_engage(body)
+    if bonus_in_range(body):
+        return move_towards(select_best_bonus(body), body)
+    return random_move_without_wall(body)
+
+def random_move_without_wall(body):
+    choices = ["rotate-left", "rotate-right", "advance"]
+    #TODO: Do not rotate towards a wall
+
+    while True:
+        choice = random.choice(choices)
+        if choice == "advance" and wallInFrontOfPenguin(body):
+            continue
+        return choice
+
+def move_towards(x, y, body):
+    pass
+
+def select_best_bonus(body):
+    return body["bonusTiles"][0]["x"], body["bonusTiles"][0]["y"]
+
+def bonus_in_range(body):
+    return len(body["bonusTiles"])>0
+
+
+
+def how_to_engage(body):
+    you = body["you"]
+    enemy = body["enemies"][0]
+    if not will_win_shootout(you["weaponPower"], enemy["weaponPower"], you["strength"], enemy["strength"]):
+        return where_to_flee(body)
+    if not will_win_shootout(you["weaponPower"], enemy["weaponPower"], you["strength"], enemy["strength"], 1):
+        return rotate_towards_enemy(body)
+    return move_towards_enemy(body)
+
+def move_towards_enemy(body):
+    pass
+
+
+def rotate_towards_enemy(body):
+    return "pass"
+
+def where_to_flee(body):
+    pass
+
+def in_fire(body):
+    you = body["you"]
+
+    for fire in body["fire"]:
+        if fire["x"]==you["x"] and fire["y"]==you["y"]:
+            return True
+    return False
+
+def escape_from_fire(body):
+    return where_to_flee(body)
+
+
+def wallInFrontOfPenguin(body):
+    xValueToCheckForWall = body["you"]["x"]
+    yValueToCheckForWall = body["you"]["y"]
+    bodyDirection = body["you"]["direction"]
+    mapwidth = body["mapWidth"]
+    mapheight = body["mapHeight"]
+
+    if bodyDirection == "top":
+        yValueToCheckForWall -= 1
+    elif bodyDirection == "bottom":
+        yValueToCheckForWall += 1
+    elif bodyDirection == "left":
+        xValueToCheckForWall -= 1
+    elif bodyDirection == "right":
+        xValueToCheckForWall += 1
+    return doesCellContainWall(body["walls"], xValueToCheckForWall, yValueToCheckForWall, mapwidth, mapheight)
+
+def doesCellContainWall(walls, x, y, mapwidth, mapheight):
+    if x<0 or y<0 or x >= mapwidth or y>= mapheight:
+        return True
+    for wall in walls:
+        if wall["x"] == x and wall["y"] == y:
+            return True
+    return False
