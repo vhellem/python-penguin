@@ -125,7 +125,8 @@ def random_move_without_wall(body):
             continue
         return choice
 
-def move_towards(x, y, body):
+def move_towards(tuple, body):
+    x, y = tuple
     return "advance"
 
 def select_best_bonus(body):
@@ -217,8 +218,6 @@ def main():
   "enemies": [
     {
       "direction": "bottom",
-      "x": 29,
-      "y": 4,
       "strength": 240,
       "ammo": 1000,
       "status": "hit",
@@ -271,4 +270,7 @@ def main():
   "fire": []
 }
     print(chooseAction(body))
+
+
+main()
 
