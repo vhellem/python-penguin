@@ -8,7 +8,7 @@ import random
 import math
 from utils import choose_penguin_action
 
-from path_finding import path_finding_ignore_target_direction
+#from path_finding import path_finding_ignore_target_direction
 
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
@@ -77,7 +77,8 @@ def chooseAction(body):
     x = you["x"]
     y = you["y"]
     d = you["direction"]
-    action = path_finding_ignore_target_direction((x,y,d), (2,2)) #choose_penguin_action(body)
+    #action = path_finding_ignore_target_direction((x,y,d), (2,2)) #choose_penguin_action(body)
+    action = choose_penguin_action(body)
     return action
 
 env = os.environ

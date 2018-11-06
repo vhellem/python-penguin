@@ -193,7 +193,18 @@ def rotate_towards_enemy(body):
 
 
 def where_to_flee(body):
-    return "advance"
+    action = RETREAT
+    you = body["you"]
+    enemy = body["enemies"][0]
+    if wallBehindPenguin(body) or (you["direction"] == enemy["direction"] and can_shoot(you["x"], you["y"], enemy["direction"], body, enemy["x"], enemy["y"], enemy["weaponRange"])):
+        action = random.choice([ROTATE_LEFT, ROTATE_RIGHT])
+
+
+    return action
+
+
+
+
 
 def in_fire(body):
     you = body["you"]
@@ -222,6 +233,23 @@ def wallInFrontOfPenguin(body):
         xValueToCheckForWall -= 1
     elif bodyDirection == "right":
         xValueToCheckForWall += 1
+    return doesCellContainWall(body["walls"], xValueToCheckForWall, yValueToCheckForWall, mapwidth, mapheight)
+
+def wallBehindPenguin(body):
+    xValueToCheckForWall = body["you"]["x"]
+    yValueToCheckForWall = body["you"]["y"]
+    bodyDirection = body["you"]["direction"]
+    mapwidth = body["mapWidth"]
+    mapheight = body["mapHeight"]
+
+    if bodyDirection == "top":
+        yValueToCheckForWall += 1
+    elif bodyDirection == "bottom":
+        yValueToCheckForWall -= 1
+    elif bodyDirection == "left":
+        xValueToCheckForWall += 1
+    elif bodyDirection == "right":
+        xValueToCheckForWall -= 1
     return doesCellContainWall(body["walls"], xValueToCheckForWall, yValueToCheckForWall, mapwidth, mapheight)
 
 def doesCellContainWall(walls, x, y, mapwidth, mapheight):
