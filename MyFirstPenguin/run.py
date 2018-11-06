@@ -95,14 +95,24 @@ def __main__():
     responseBody.write(json.dumps(response))
     responseBody.close()
 
-__main__()
+#__main__()
 
-#body = {
-#        "you": {
-#            "x": 5,
-#            "y": 5,
-#            "direction": "top"
-#            },
-#}
+body = {
+        "you": {
+            "x": 5,
+            "y": 5,
+            "direction": "top"
+            },
+}
 
-#print(chooseAction(body))
+action = chooseAction(body)
+responseBody = open(env['res'], 'w')
+
+response = {}
+returnObject = {}
+body = json.loads(open(env["req"], "r").read())
+returnObject["command"] = chooseAction(body)
+
+response["body"] = returnObject
+responseBody.write(json.dumps(response))
+responseBody.close()
