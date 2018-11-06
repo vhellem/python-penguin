@@ -4,6 +4,8 @@ import time
 import random
 import math
 
+from path_finding import path_finding_ignore_target_direction
+
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
 ADVANCE = "advance"
@@ -61,10 +63,19 @@ def moveTowardsCenterOfMap(body):
     centerPointY = math.floor(body["mapHeight"] / 2)
     return moveTowardsPoint(body, centerPointX, centerPointY)
 
+def action_from_tile_to_tile(f, t):
+    x, y, d = f
+    x_to, y_to, d_to = t
+
+
 def chooseAction(body):
-    action = PASS
-    action = moveTowardsCenterOfMap(body)
-    return action
+    x = body["you"]["x"]
+    y = body["you"]["y"]
+    d = body["you"]["direction"]
+    x_to = 2
+    y_to = 2
+
+    return path_finding_ignore_target_direction((x,y,d), (x_to,y_to))
 
 env = os.environ
 req_params_query = env['REQ_PARAMS_QUERY']
@@ -77,8 +88,7 @@ if req_params_query == "info":
     returnObject["team"] = "Team Python"
 elif req_params_query == "command":    
     body = json.loads(open(env["req"], "r").read())
-    returnObject["command"] = ROTATE_RIGHT  # chooseAction(body)
-    time.sleep(2)
+    returnObject["command"] = chooseAction(body)
 
 response["body"] = returnObject
 responseBody.write(json.dumps(response))
