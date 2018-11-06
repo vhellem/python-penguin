@@ -1,11 +1,14 @@
+import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname( __file__ ), 'venv/Lib/site-packages')))
+
 import json
 import time
 import random
 import math
 from utils import choose_penguin_action
 
-#from path_finding import path_finding_ignore_target_direction
+from path_finding import path_finding_ignore_target_direction
 
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
@@ -70,11 +73,12 @@ def action_from_tile_to_tile(f, t):
 
 
 def chooseAction(body):
-    action = choose_penguin_action(body)
+    you = body["you"]
+    x = you["x"]
+    y = you["y"]
+    d = you["direction"]
+    action = path_finding_ignore_target_direction((x,y,d), (2,2)) #choose_penguin_action(body)
     return action
-
-
-
 
 env = os.environ
 req_params_query = "command" #env['REQ_PARAMS_QUERY']
