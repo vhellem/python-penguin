@@ -83,7 +83,8 @@ def chooseAction(body):
     for f in body["fire"]:
         not_allowed.add((f["x"], f["y"]))
     for e in body["enemies"]:
-        not_allowed.add((e["x"], e["y"]))
+        if "x" in e.keys():
+            not_allowed.add((e["x"], e["y"]))
     action = path_finding_ignore_target_direction((x,y,d), (2,2), not_allowed) #choose_penguin_action(body)
     #action = choose_penguin_action(body)
     return action
