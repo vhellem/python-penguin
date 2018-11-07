@@ -183,10 +183,10 @@ def add_map_border_to_set(body, not_allowed):
     mapW = body["mapWidth"]
     for i in range(-1, mapH + 1):
         not_allowed.add((-1, i))
-        not_allowed.add((mapW + 1, i))
+        not_allowed.add((mapW, i))
     for i in range(-1, mapW + 1):
         not_allowed.add((i, -1))
-        not_allowed.add((i, mapH + 1))
+        not_allowed.add((i, mapH))
 
 def create_not_allowed(body):
     not_allowed = set()
@@ -203,8 +203,7 @@ def create_not_allowed(body):
 
 def move_towards(tuple, body):
     if tuple is None:
-        #TODO
-        return "move_towards None"
+        return "shoot"
     x, y = tuple
     you = body["you"]
     youX = you["x"]
