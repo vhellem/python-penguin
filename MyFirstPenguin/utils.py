@@ -203,7 +203,7 @@ def enemy_is_far_away(body):
     you = body["you"]
     enemy = body["enemies"][0]
 
-    if abs(you["x"]-enemy["x"])>=2 or abs(you["y"]-enemy["y"])>=2:
+    if abs(you["x"]-enemy["x"])>=2 and abs(you["y"]-enemy["y"])>=2:
         return True
 
     return False
@@ -323,7 +323,7 @@ def main():
   "visibility": 5,
   "weaponRange": 5,
   "you": {
-    "direction": "top",
+    "direction": "right",
     "x": 29,
     "y": 8,
     "strength": 300,
@@ -336,9 +336,9 @@ def main():
   "enemies": [
     {
         "x": 29,
-        "y": 2,
-      "direction": "right",
-      "strength": 5000,
+        "y": 4,
+      "direction": "left",
+      "strength": 300,
       "ammo": 1000,
       "status": "hit",
       "weaponRange": 5,
@@ -392,3 +392,4 @@ def main():
     print(choose_penguin_action(body))
 
 
+print(main())
