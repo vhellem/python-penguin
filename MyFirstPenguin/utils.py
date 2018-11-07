@@ -1,5 +1,6 @@
 from math import ceil
 import random
+from path_finding import path_finding_ignore_target_direction
 
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
@@ -162,7 +163,20 @@ def random_move_without_wall(body):
 
 def move_towards(tuple, body):
     x, y = tuple
-    return moveTowardsPoint(body, x, y)
+    you = body["you"]
+    youX = you["x"]
+    youY = you["y"]
+    d = you["direction"]
+    not_allowed = set()
+    for w in body["walls"]:
+        not_allowed.add((w["x"], w["y"]))
+    for f in body["fire"]:
+        not_allowed.add((f["x"], f["y"]))
+    for e in body["enemies"]:
+        if "x" in e.keys():
+            not_allowed.add((e["x"], e["y"]))
+    action = path_finding_ignore_target_direction((youX,youY,d), (x,y), not_allowed) #choose_penguin_action(body)
+    return action
 
 def select_best_bonus(body):
     return body["bonusTiles"][0]["x"], body["bonusTiles"][0]["y"]
@@ -196,7 +210,7 @@ def enemy_is_far_away(body):
 
 def move_towards_enemy(body):
     enemy = body["enemies"][0]
-    return moveTowardsPoint(body, enemy["x"], enemy["y"])
+    return move_towards((enemy["x"], enemy["y"], body))
 
 
 
@@ -322,7 +336,7 @@ def main():
   "enemies": [
     {
         "x": 29,
-        "y": 6,
+        "y": 2,
       "direction": "right",
       "strength": 5000,
       "ammo": 1000,
@@ -376,6 +390,5 @@ def main():
   "fire": []
 }
     print(choose_penguin_action(body))
-
 
 
