@@ -58,10 +58,3 @@ def path_finding_ignore_target_direction(f, t, not_allowed):
                 action[n] = a
                 frontier.append(n)
     return None
-
-f_node = (1,0,"top")
-t_node = (1,2)
-
-while (f_node[0], f_node[1]) != t_node:
-    print(f_node)
-    f_node = path_finding_ignore_target_direction(f_node, t_node, [(0,1),(1,1),(2,1)]) 
