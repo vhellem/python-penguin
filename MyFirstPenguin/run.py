@@ -8,7 +8,7 @@ import random
 import math
 from utils import choose_penguin_action
 
-#from path_finding import path_finding_ignore_target_direction
+from path_finding import path_finding_ignore_target_direction
 
 ROTATE_LEFT = "rotate-left"
 ROTATE_RIGHT = "rotate-right"
