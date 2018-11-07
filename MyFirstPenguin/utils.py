@@ -163,7 +163,8 @@ def random_move_without_wall(body):
 
 def move_towards(tuple, body):
     if tuple is None:
-        return "shoot"
+        #TODO
+        return "move_towards None"
     x, y = tuple
     you = body["you"]
     youX = you["x"]
