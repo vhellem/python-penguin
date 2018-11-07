@@ -156,6 +156,7 @@ def random_move_without_wall(body):
     #TODO: Do not rotate towards a wall
 
     while True:
+        print("WHILE")
         choice = random.choice(choices)
         if choice == "advance" and wallInFrontOfPenguin(body):
             continue
@@ -172,6 +173,7 @@ def add_map_border_to_set(body, not_allowed):
         not_allowed.add((i, mapH + 1))
 
 def create_not_allowed(body):
+    print("Creating not allowed")
     not_allowed = set()
 #    add_map_border_to_set(body, not_allowed)
     for w in body["walls"]:

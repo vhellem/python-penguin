@@ -42,6 +42,7 @@ def all_neighbours(q):
         yield ((x, y, "bottom"), ROTATE_LEFT)
 
 def path_finding_ignore_target_direction(f, t, not_allowed):
+    print("PATH")
     x, y, d = f
     x_to, y_to = t
 
