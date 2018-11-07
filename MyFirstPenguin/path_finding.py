@@ -62,4 +62,4 @@ def path_finding_ignore_target_direction(f, t, not_allowed):
                 parent[n] = q
                 action[n] = a
                 frontier.append(n)
-    return None
+    return None, 0
