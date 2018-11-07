@@ -174,7 +174,7 @@ def add_map_border_to_set(body, not_allowed):
 def create_not_allowed(body):
     print("Creating not allowed")
     not_allowed = set()
-#    add_map_border_to_set(body, not_allowed)
+    add_map_border_to_set(body, not_allowed)
     for w in body["walls"]:
         not_allowed.add((w["x"], w["y"]))
     for f in body["fire"]:
@@ -205,11 +205,10 @@ def select_best_bonus(body):
     best = None
     for bonus in body["bonusTiles"]:
         x, y = bonus["x"], bonus["y"]
-        a, l = path_finding_ignore_target_direction((my_x,my_y,my_d), (x,y), create_not_allowed(body))
-        if a is not None:
-            if l < min_l:
-                best = (x, y)
-                min_l = l
+        l = abs(x-my_x) + abs(y-my_y)
+        if l < min_l:
+            best = (x, y)
+            min_l = l
 
     return best
 
