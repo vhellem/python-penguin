@@ -67,10 +67,6 @@ def moveTowardsCenterOfMap(body):
     centerPointY = math.floor(body["mapHeight"] / 2)
     return moveTowardsPoint(body, centerPointX, centerPointY)
 
-def action_from_tile_to_tile(f, t):
-    x, y, d = f
-    x_to, y_to, d_to = t
-
 
 def chooseAction(body):
     you = body["you"]
@@ -85,8 +81,8 @@ def chooseAction(body):
     for e in body["enemies"]:
         if "x" in e.keys():
             not_allowed.add((e["x"], e["y"]))
-    #action = path_finding_ignore_target_direction((x,y,d), (2,2), not_allowed) #choose_penguin_action(body)
-    action = choose_penguin_action(body)
+    action = path_finding_ignore_target_direction((x,y,d), (2,2), not_allowed) #choose_penguin_action(body)
+    #action = choose_penguin_action(body)
     return action
 
 
