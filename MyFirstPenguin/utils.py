@@ -218,7 +218,7 @@ def enemy_is_far_away(body):
     you = body["you"]
     enemy = body["enemies"][0]
 
-    if abs(you["x"]-enemy["x"])>=2 or abs(you["y"]-enemy["y"])>=2:
+    if abs(you["x"]-enemy["x"])>=2 and abs(you["y"]-enemy["y"])>=2:
         return True
 
     return False
@@ -236,23 +236,23 @@ def rotate_towards_enemy(body):
     if you["x"] > enemy["x"]:
         if you["y"] > enemy["y"]:
             possibleMoves = (GET_LEFT[you["direction"]], ROTATE_UP[you["direction"]])
-            if enemy["direction"] == "down":
+            if enemy["direction"] == "bottom":
                 return possibleMoves[0]
             return possibleMoves[1]
         else:
             possibleMoves = (GET_LEFT[you["direction"]], ROTATE_DOWN[you["direction"]])
-            if enemy["direction"] == "up":
+            if enemy["direction"] == "top":
                 return possibleMoves[0]
             return possibleMoves[1]
     else:
         if you["y"] > enemy["y"]:
             possibleMoves = (GET_RIGHT[you["direction"]], ROTATE_UP[you["direction"]])
-            if enemy["direction"] == "down":
+            if enemy["direction"] == "bottom":
                 return possibleMoves[0]
             return possibleMoves[1]
         else:
             possibleMoves = (GET_RIGHT[you["direction"]], ROTATE_DOWN[you["direction"]])
-            if enemy["direction"] == "up":
+            if enemy["direction"] == "top":
                 return possibleMoves[0]
             return possibleMoves[1]
 
@@ -338,7 +338,7 @@ def main():
   "visibility": 5,
   "weaponRange": 5,
   "you": {
-    "direction": "top",
+    "direction": "right",
     "x": 29,
     "y": 8,
     "strength": 300,
@@ -351,9 +351,9 @@ def main():
   "enemies": [
     {
         "x": 29,
-        "y": 2,
-      "direction": "right",
-      "strength": 5000,
+        "y": 4,
+      "direction": "left",
+      "strength": 300,
       "ammo": 1000,
       "status": "hit",
       "weaponRange": 5,
@@ -407,3 +407,4 @@ def main():
     print(choose_penguin_action(body))
 
 
+print(main())
