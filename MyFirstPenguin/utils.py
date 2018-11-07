@@ -173,7 +173,7 @@ def add_map_border_to_set(body, not_allowed):
 
 def create_not_allowed(body):
     not_allowed = set()
-    add_map_border_to_set(body, not_allowed)
+#    add_map_border_to_set(body, not_allowed)
     for w in body["walls"]:
         not_allowed.add((w["x"], w["y"]))
     for f in body["fire"]:
