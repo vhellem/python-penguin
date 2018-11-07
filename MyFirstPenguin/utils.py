@@ -319,14 +319,51 @@ def rotate_towards_enemy(body):
 
 
 def where_to_flee(body):
-    action = RETREAT
     you = body["you"]
+    dir = you["direction"]
+
     enemy = body["enemies"][0]
-    if wallBehindPenguin(body) or (you["direction"] == enemy["direction"] and can_shoot(you["x"], you["y"], enemy["direction"], body, enemy["x"], enemy["y"], enemy["weaponRange"])):
-        action = random.choice([ROTATE_LEFT, ROTATE_RIGHT])
 
+    if you["x"] >= enemy["x"]:
+        if you["y"] >= enemy["y"]:
+            if dir == "top" or dir == "left":
+                if not wallBehindPenguin(body):
+                    return RETREAT
+                return ROTATE_LEFT
+            else:
+                if not wallInFrontOfPenguin(body):
+                    return ADVANCE
+                return ROTATE_LEFT
 
-    return action
+        else:
+            if dir == "bottom" or dir == "left":
+                if not wallBehindPenguin(body):
+                    return RETREAT
+                return ROTATE_RIGHT
+            else:
+                if not wallInFrontOfPenguin(body):
+                    return ADVANCE
+                return ROTATE_RIGHT
+    else:
+        if you["y"] >= enemy["y"]:
+            if dir == "top" or dir == "right":
+                if not wallBehindPenguin(body):
+                    return RETREAT
+                return ROTATE_RIGHT
+            else:
+                if not wallInFrontOfPenguin(body):
+                    return ADVANCE
+                return ROTATE_RIGHT
+        else:
+            if dir == "bottom" or dir == "right":
+                if not wallBehindPenguin(body):
+                    return RETREAT
+                return ROTATE_LEFT
+            else:
+                if not wallInFrontOfPenguin(body):
+                    return ADVANCE
+                return ROTATE_LEFT
+
 
 
 
@@ -341,7 +378,12 @@ def in_fire(body):
     return False
 
 def escape_from_fire(body):
-    return where_to_flee(body)
+    action = RETREAT
+    you = body["you"]
+    if wallBehindPenguin(body):
+        action = random.choice([ROTATE_LEFT, ROTATE_RIGHT])
+
+    return action
 
 
 def wallInFrontOfPenguin(body):
