@@ -155,12 +155,28 @@ def choose_penguin_action(body):
 def random_move_without_wall(body):
     choices = ["rotate-left", "rotate-right", "advance"]
     #TODO: Do not rotate towards a wall
+    youX = body["you"]["x"]
+    youY = body["you"]["y"]
+    d = body["you"]["direction"]
+    x, y = body["maxWidth"]//2, body["maxHeight"]//2
 
-    while True:
-        choice = random.choice(choices)
-        if choice == "advance" and wallInFrontOfPenguin(body):
-            continue
-        return choice
+    if abs(youX-x) + abs(youY-y) <= 3:
+        action = ADVANCE
+        if wallInFrontOfPenguin(body):
+            return random.choice[ROTATE_LEFT, ROTATE_RIGHT]
+        return action
+
+    action, _ = path_finding_ignore_target_direction((youX, youY, d), (x, y), create_not_allowed(body))
+
+    if random.random() > 0.7:
+        return SHOOT
+    if not action:
+        action = ADVANCE
+        if wallInFrontOfPenguin(body):
+            return random.choice[ROTATE_LEFT, ROTATE_RIGHT]
+        return action
+
+    return action
 
 def add_map_border_to_set(body, not_allowed):
     mapH = body["mapHeight"]
@@ -449,6 +465,3 @@ def main():
   "fire": []
 }
     print(choose_penguin_action(body))
-
-
-main()
