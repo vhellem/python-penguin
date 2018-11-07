@@ -26,12 +26,12 @@ def can_shoot(x, y, currentDir, body, youX, youY, weapon_range):
     if x == youX:
         if abs(y-youY) > weapon_range:
             return False
-        if youY > y and currentDir == "bottom":
+        if youY > y and currentDir == "top":
             for wall in body["walls"]:
                 if wall["x"]==x and wall["y"]>y and wall["y"]<youY:
                         return False
             return True
-        if youY < y and currentDir == "top":
+        if youY < y and currentDir == "bottom":
             for wall in body["walls"]:
                 if wall["x"]==x and wall["y"]>youY and wall["y"]<y:
                         return False
@@ -40,12 +40,12 @@ def can_shoot(x, y, currentDir, body, youX, youY, weapon_range):
     else:
         if abs(x-youX) > weapon_range:
             return False
-        if youX > x and currentDir == "right":
+        if youX > x and currentDir == "left":
             for wall in body["walls"]:
                 if wall["y"]==y and wall["x"]>x and wall["x"]<youX:
                         return False
             return True
-        if youX < x and currentDir == "left":
+        if youX < x and currentDir == "right":
             for wall in body["walls"]:
                 if wall["y"]==y and wall["x"]<x and wall["x"]> youX:
                         return False
@@ -96,6 +96,24 @@ def will_win_shootout(your_power, enemy_power, your_strength, enemy_strength, yo
 
 
 
+def moveTowardsPoint(body, pointX, pointY):
+    penguinPositionX = body["you"]["x"]
+    penguinPositionY = body["you"]["y"]
+    plannedAction = PASS
+    bodyDirection = body["you"]["direction"]
+
+    if penguinPositionX < pointX:
+        plannedAction =  MOVE_RIGHT[bodyDirection]
+    elif penguinPositionX > pointX:
+        plannedAction = MOVE_LEFT[bodyDirection]
+    elif penguinPositionY < pointY:
+        plannedAction = MOVE_DOWN[bodyDirection]
+    elif penguinPositionY > pointY:
+        plannedAction = MOVE_UP[bodyDirection]
+
+    if plannedAction == ADVANCE and wallInFrontOfPenguin(body):
+        plannedAction = SHOOT
+    return plannedAction
 
 
 def enemy_in_range(enemy):
@@ -303,8 +321,10 @@ def main():
   },
   "enemies": [
     {
-      "direction": "bottom",
-      "strength": 240,
+        "x": 29,
+        "y": 6,
+      "direction": "right",
+      "strength": 5000,
       "ammo": 1000,
       "status": "hit",
       "weaponRange": 5,
@@ -358,21 +378,4 @@ def main():
     print(choose_penguin_action(body))
 
 
-def moveTowardsPoint(body, pointX, pointY):
-    penguinPositionX = body["you"]["x"]
-    penguinPositionY = body["you"]["y"]
-    plannedAction = PASS
-    bodyDirection = body["you"]["direction"]
 
-    if penguinPositionX < pointX:
-        plannedAction =  MOVE_RIGHT[bodyDirection]
-    elif penguinPositionX > pointX:
-        plannedAction = MOVE_LEFT[bodyDirection]
-    elif penguinPositionY < pointY:
-        plannedAction = MOVE_DOWN[bodyDirection]
-    elif penguinPositionY > pointY:
-        plannedAction = MOVE_UP[bodyDirection]
-
-    if plannedAction == ADVANCE and wallInFrontOfPenguin(body):
-        plannedAction = SHOOT
-    return plannedAction
