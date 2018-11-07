@@ -161,6 +161,28 @@ def random_move_without_wall(body):
             continue
         return choice
 
+def add_map_border_to_set(body, not_allowed):
+    mapH = body["mapHeight"]
+    mapW = body["mapWidth"]
+    for i in range(-1, mapH + 1):
+        not_allowed.add((-1, i))
+        not_allowed.add((mapW + 1, i))
+    for i in range(-1, mapW + 1):
+        not_allowed.add((i, -1))
+        not_allowed.add((i, mapH + 1))
+
+def create_not_allowed(body):
+    not_allowed = set()
+    add_map_border_to_set(body, not_allowed)
+    for w in body["walls"]:
+        not_allowed.add((w["x"], w["y"]))
+    for f in body["fire"]:
+        not_allowed.add((f["x"], f["y"]))
+    for e in body["enemies"]:
+        if "x" in e.keys():
+            not_allowed.add((e["x"], e["y"]))
+    return not_allowed
+
 def move_towards(tuple, body):
     if tuple is None:
         #TODO
@@ -170,15 +192,7 @@ def move_towards(tuple, body):
     youX = you["x"]
     youY = you["y"]
     d = you["direction"]
-    not_allowed = set()
-    for w in body["walls"]:
-        not_allowed.add((w["x"], w["y"]))
-    for f in body["fire"]:
-        not_allowed.add((f["x"], f["y"]))
-    for e in body["enemies"]:
-        if "x" in e.keys():
-            not_allowed.add((e["x"], e["y"]))
-    action, _ = path_finding_ignore_target_direction((youX,youY,d), (x,y), not_allowed) #choose_penguin_action(body)
+    action, _ = path_finding_ignore_target_direction((youX,youY,d), (x,y), create_not_allowed(body))
     return action
 
 def select_best_bonus(body):
@@ -189,7 +203,7 @@ def select_best_bonus(body):
     best = None
     for bonus in body["bonusTiles"]:
         x, y = bonus["x"], bonus["y"]
-        a, l = path_finding_ignore_target_direction((my_x,my_y,my_d), (x,y))
+        a, l = path_finding_ignore_target_direction((my_x,my_y,my_d), (x,y), create_not_allowed(body))
         if a is not None:
             if l < min_l:
                 best = (x, y)
@@ -199,7 +213,6 @@ def select_best_bonus(body):
 
 def bonus_in_range(body):
     return len(body["bonusTiles"])>0
-
 
 
 def how_to_engage(body):
