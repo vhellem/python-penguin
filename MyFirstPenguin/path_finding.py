@@ -5,11 +5,13 @@ RETREAT = "retreat"
 directions = ["top", "left", "right", "bottom"]
 
 def get_path(q, parent):
+    path_length = 1
     last_parent = q
     while parent.get(q, None):
+        path_length += 1
         last_parent = q
         q = parent[q]
-    return last_parent
+    return (last_parent, path_length)
 
 def neighbours(q, not_allowed):
     for n, a in all_neighbours(q):
@@ -50,7 +52,8 @@ def path_finding_ignore_target_direction(f, t, not_allowed):
     while len(frontier) > 0:
         q = frontier.pop(0)
         if (q[0], q[1]) == (x_to, y_to):
-            return action[get_path(q, parent)]
+            next_tile, path_len = get_path(q, parent)
+            return action[next_tile], path_len
         visited[q] = True
         for n, a in neighbours(q, not_allowed):
             if not visited.get(n, False):

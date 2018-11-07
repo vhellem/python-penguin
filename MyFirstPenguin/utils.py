@@ -162,6 +162,8 @@ def random_move_without_wall(body):
         return choice
 
 def move_towards(tuple, body):
+    if tuple is None:
+        return "shoot"
     x, y = tuple
     you = body["you"]
     youX = you["x"]
@@ -175,11 +177,24 @@ def move_towards(tuple, body):
     for e in body["enemies"]:
         if "x" in e.keys():
             not_allowed.add((e["x"], e["y"]))
-    action = path_finding_ignore_target_direction((youX,youY,d), (x,y), not_allowed) #choose_penguin_action(body)
+    action, _ = path_finding_ignore_target_direction((youX,youY,d), (x,y), not_allowed) #choose_penguin_action(body)
     return action
 
 def select_best_bonus(body):
-    return body["bonusTiles"][0]["x"], body["bonusTiles"][0]["y"]
+    my_x = body["you"]["x"]
+    my_y = body["you"]["y"]
+    my_d = body["you"]["direction"]
+    min_l = 100000
+    best = None
+    for bonus in body["bonustiles"]:
+        x, y = bonus["x"], bonus["y"]
+        a, l = path_finding_ignore_target_direction((my_x,my_y,my_d), (x,y))
+        if a is not None:
+            if l < min_l:
+                best = (x, y)
+                min_l = l
+
+    return best
 
 def bonus_in_range(body):
     return len(body["bonusTiles"])>0
