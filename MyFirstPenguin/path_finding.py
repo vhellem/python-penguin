@@ -54,6 +54,7 @@ def path_finding_ignore_target_direction(f, t, not_allowed):
         q = frontier.pop(0)
         if (q[0], q[1]) == (x_to, y_to):
             next_tile, path_len = get_path(q, parent)
+            print("PATH2")
             return action[next_tile], path_len
         visited[q] = True
         for n, a in neighbours(q, not_allowed):

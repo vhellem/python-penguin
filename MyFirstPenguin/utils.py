@@ -156,7 +156,6 @@ def random_move_without_wall(body):
     #TODO: Do not rotate towards a wall
 
     while True:
-        print("WHILE")
         choice = random.choice(choices)
         if choice == "advance" and wallInFrontOfPenguin(body):
             continue
@@ -183,6 +182,7 @@ def create_not_allowed(body):
     for e in body["enemies"]:
         if "x" in e.keys():
             not_allowed.add((e["x"], e["y"]))
+    print("Creating not allowed2")
     return not_allowed
 
 def move_towards(tuple, body):
