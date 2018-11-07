@@ -68,31 +68,7 @@ def moveTowardsCenterOfMap(body):
     return moveTowardsPoint(body, centerPointX, centerPointY)
 
 
-def add_map_border_to_set(body, not_allowed):
-    mapH = body["mapHeight"]
-    mapW = body["mapWidth"]
-    for i in range(-1, mapH + 1):
-        not_allowed.add((-1, i))
-        not_allowed.add((mapW + 1, i))
-    for i in range(-1, mapW + 1):
-        not_allowed.add((i, -1))
-        not_allowed.add((i, mapH + 1))
-
 def chooseAction(body):
-    you = body["you"]
-    x = you["x"]
-    y = you["y"]
-    d = you["direction"]
-    not_allowed = set()
-    add_map_border_to_set(body, not_allowed)
-    for w in body["walls"]:
-        not_allowed.add((w["x"], w["y"]))
-    for f in body["fire"]:
-        not_allowed.add((f["x"], f["y"]))
-    for e in body["enemies"]:
-        if "x" in e.keys():
-            not_allowed.add((e["x"], e["y"]))
-    #action = path_finding_ignore_target_direction((x,y,d), (2,2), not_allowed) #choose_penguin_action(body)
     action = choose_penguin_action(body)
     return action
 

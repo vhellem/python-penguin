@@ -5,11 +5,13 @@ RETREAT = "retreat"
 directions = ["top", "left", "right", "bottom"]
 
 def get_path(q, parent):
+    path_length = 1
     last_parent = q
     while parent.get(q, None):
+        path_length += 1
         last_parent = q
         q = parent[q]
-    return last_parent
+    return (last_parent, path_length)
 
 def neighbours(q, not_allowed):
     for n, a in all_neighbours(q):
@@ -24,13 +26,13 @@ def all_neighbours(q):
         yield ((x, y, "left"), ROTATE_LEFT)
         yield ((x, y, "right"), ROTATE_RIGHT)
     elif d == "bottom":
-        yield ((x, y-1, d), RETREAT)
         yield ((x, y+1, d), ADVANCE)
+        yield ((x, y-1, d), RETREAT)
         yield ((x, y, "left"), ROTATE_RIGHT)
         yield ((x, y, "right"), ROTATE_LEFT)
     elif d == "right":
-        yield ((x-1, y, d), RETREAT)
         yield ((x+1, y, d), ADVANCE)
+        yield ((x-1, y, d), RETREAT)
         yield ((x, y, "top"), ROTATE_LEFT)
         yield ((x, y, "bottom"), ROTATE_RIGHT)
     elif d == "left":
@@ -40,6 +42,7 @@ def all_neighbours(q):
         yield ((x, y, "bottom"), ROTATE_LEFT)
 
 def path_finding_ignore_target_direction(f, t, not_allowed):
+    print("PATH")
     x, y, d = f
     x_to, y_to = t
 
@@ -50,11 +53,13 @@ def path_finding_ignore_target_direction(f, t, not_allowed):
     while len(frontier) > 0:
         q = frontier.pop(0)
         if (q[0], q[1]) == (x_to, y_to):
-            return action[get_path(q, parent)]
+            next_tile, path_len = get_path(q, parent)
+            print("PATH2")
+            return action[next_tile], path_len
         visited[q] = True
         for n, a in neighbours(q, not_allowed):
             if not visited.get(n, False):
                 parent[n] = q
                 action[n] = a
                 frontier.append(n)
-    return None
+    return None, 0

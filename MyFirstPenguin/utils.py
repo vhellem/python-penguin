@@ -162,13 +162,19 @@ def random_move_without_wall(body):
             continue
         return choice
 
-def move_towards(tuple, body):
-    x, y = tuple
-    you = body["you"]
-    youX = you["x"]
-    youY = you["y"]
-    d = you["direction"]
+def add_map_border_to_set(body, not_allowed):
+    mapH = body["mapHeight"]
+    mapW = body["mapWidth"]
+    for i in range(-1, mapH + 1):
+        not_allowed.add((-1, i))
+        not_allowed.add((mapW + 1, i))
+    for i in range(-1, mapW + 1):
+        not_allowed.add((i, -1))
+        not_allowed.add((i, mapH + 1))
+
+def create_not_allowed(body):
     not_allowed = set()
+    add_map_border_to_set(body, not_allowed)
     for w in body["walls"]:
         not_allowed.add((w["x"], w["y"]))
     for f in body["fire"]:
@@ -176,11 +182,35 @@ def move_towards(tuple, body):
     #for e in body["enemies"]:
         #if "x" in e.keys():
             #not_allowed.add((e["x"], e["y"]))
-    action = path_finding_ignore_target_direction((youX,youY,d), (x,y), not_allowed) #choose_penguin_action(body)
+
+    return not_allowed
+
+def move_towards(tuple, body):
+    if tuple is None:
+        #TODO
+        return "move_towards None"
+    x, y = tuple
+    you = body["you"]
+    youX = you["x"]
+    youY = you["y"]
+    d = you["direction"]
+    action, _ = path_finding_ignore_target_direction((youX,youY,d), (x,y), create_not_allowed(body))
     return action
 
 def select_best_bonus(body):
-    return body["bonusTiles"][0]["x"], body["bonusTiles"][0]["y"]
+    my_x = body["you"]["x"]
+    my_y = body["you"]["y"]
+    my_d = body["you"]["direction"]
+    min_l = 100000
+    best = None
+    for bonus in body["bonusTiles"]:
+        x, y = bonus["x"], bonus["y"]
+        l = abs(x-my_x) + abs(y-my_y)
+        if l < min_l:
+            best = (x, y)
+            min_l = l
+
+    return best
 
 def bonus_in_range(body):
     return len(body["bonusTiles"])>0
@@ -213,7 +243,6 @@ def is_enemy_advance_unobstructed(body):
             if can_shoot(enemy["x"] - 1, enemy["y"], "bottom", body, you["x"], you["y"], you["weaponRange"]):
                 return True
     return False
-
 
 
 def how_to_engage(body):
@@ -422,3 +451,4 @@ def main():
     print(choose_penguin_action(body))
 
 
+main()
