@@ -160,8 +160,21 @@ def how_to_engage(body):
     if not will_win_shootout(you["weaponDamage"], enemy["weaponDamage"], you["strength"], enemy["strength"]):
         return where_to_flee(body)
     if not will_win_shootout(you["weaponDamage"], enemy["weaponDamage"], you["strength"], enemy["strength"], 1):
-        return rotate_towards_enemy(body)
+        if enemy_is_far_away(body):
+            if bonus_in_range(body):
+                return move_towards(select_best_bonus(body), body)
+        else:
+            return rotate_towards_enemy(body)
     return move_towards_enemy(body)
+
+def enemy_is_far_away(body):
+    you = body["you"]
+    enemy = body["enemies"][0]
+
+    if abs(you["x"]-enemy["x"])>=2 or abs(you["y"]-enemy["y"])>=2:
+        return True
+
+    return False
 
 def move_towards_enemy(body):
     enemy = body["enemies"][0]
