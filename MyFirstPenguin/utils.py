@@ -187,7 +187,7 @@ def select_best_bonus(body):
     my_d = body["you"]["direction"]
     min_l = 100000
     best = None
-    for bonus in body["bonustiles"]:
+    for bonus in body["bonusTiles"]:
         x, y = bonus["x"], bonus["y"]
         a, l = path_finding_ignore_target_direction((my_x,my_y,my_d), (x,y))
         if a is not None:
