@@ -221,23 +221,23 @@ def rotate_towards_enemy(body):
     if you["x"] > enemy["x"]:
         if you["y"] > enemy["y"]:
             possibleMoves = (GET_LEFT[you["direction"]], ROTATE_UP[you["direction"]])
-            if enemy["direction"] == "down":
+            if enemy["direction"] == "bottom":
                 return possibleMoves[0]
             return possibleMoves[1]
         else:
             possibleMoves = (GET_LEFT[you["direction"]], ROTATE_DOWN[you["direction"]])
-            if enemy["direction"] == "up":
+            if enemy["direction"] == "top":
                 return possibleMoves[0]
             return possibleMoves[1]
     else:
         if you["y"] > enemy["y"]:
             possibleMoves = (GET_RIGHT[you["direction"]], ROTATE_UP[you["direction"]])
-            if enemy["direction"] == "down":
+            if enemy["direction"] == "bottom":
                 return possibleMoves[0]
             return possibleMoves[1]
         else:
             possibleMoves = (GET_RIGHT[you["direction"]], ROTATE_DOWN[you["direction"]])
-            if enemy["direction"] == "up":
+            if enemy["direction"] == "top":
                 return possibleMoves[0]
             return possibleMoves[1]
 
