@@ -74,7 +74,7 @@ def chooseAction(body):
 
 
 env = os.environ
-req_params_query = "command" #env['REQ_PARAMS_QUERY']
+req_params_query = env['REQ_PARAMS_QUERY']
 responseBody = open(env['res'], 'w')
 
 response = {}
@@ -82,8 +82,8 @@ returnObject = {}
 
 
 if req_params_query == "info":
-    returnObject["name"] = "Pingu"
-    returnObject["team"] = "Team Python"
+    returnObject["name"] = "Frodo"
+    returnObject["team"] = "Palangvin"
 elif req_params_query == "command":
     body = json.loads(open(env["req"], "r").read())
     returnObject["command"] = chooseAction(body)
