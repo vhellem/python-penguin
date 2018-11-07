@@ -146,6 +146,7 @@ def choose_penguin_action(body):
         if should_flee(body):
             return where_to_flee(body)
 
+
         return how_to_engage(body)
     if bonus_in_range(body):
         return move_towards(select_best_bonus(body), body)
@@ -172,9 +173,9 @@ def move_towards(tuple, body):
         not_allowed.add((w["x"], w["y"]))
     for f in body["fire"]:
         not_allowed.add((f["x"], f["y"]))
-    for e in body["enemies"]:
-        if "x" in e.keys():
-            not_allowed.add((e["x"], e["y"]))
+    #for e in body["enemies"]:
+        #if "x" in e.keys():
+            #not_allowed.add((e["x"], e["y"]))
     action = path_finding_ignore_target_direction((youX,youY,d), (x,y), not_allowed) #choose_penguin_action(body)
     return action
 
@@ -183,6 +184,35 @@ def select_best_bonus(body):
 
 def bonus_in_range(body):
     return len(body["bonusTiles"])>0
+
+def is_enemy_advance_unobstructed(body):
+    you = body["you"]
+    enemy = body["enemies"][0]
+
+    if you["x"] > enemy["x"]:
+        if you["y"] > enemy["y"]:
+            if can_shoot(enemy["x"], enemy["y"]+1, "left", body, you["x"], you["y"], you["weaponRange"]):
+                return True
+            if can_shoot(enemy["x"]+1, enemy["y"], "top", body, you["x"], you["y"], you["weaponRange"]):
+                return True
+
+        else:
+            if can_shoot(enemy["x"], enemy["y"]-1, "left", body, you["x"], you["y"], you["weaponRange"]):
+                return True
+            if can_shoot(enemy["x"]+1, enemy["y"], "bottom", body, you["x"], you["y"], you["weaponRange"]):
+                return True
+    else:
+        if you["y"] > enemy["y"]:
+            if can_shoot(enemy["x"], enemy["y"]+ 1, "right", body, you["x"], you["y"], you["weaponRange"]):
+                return True
+            if can_shoot(enemy["x"] - 1, enemy["y"], "top", body, you["x"], you["y"], you["weaponRange"]):
+                return True
+        else:
+            if can_shoot(enemy["x"], enemy["y"] - 1, "right", body, you["x"], you["y"], you["weaponRange"]):
+                return True
+            if can_shoot(enemy["x"] - 1, enemy["y"], "bottom", body, you["x"], you["y"], you["weaponRange"]):
+                return True
+    return False
 
 
 
@@ -195,7 +225,7 @@ def how_to_engage(body):
         if enemy_is_far_away(body):
             if bonus_in_range(body):
                 return move_towards(select_best_bonus(body), body)
-        else:
+        elif is_enemy_advance_unobstructed(body):
             return rotate_towards_enemy(body)
     return move_towards_enemy(body)
 
@@ -210,7 +240,7 @@ def enemy_is_far_away(body):
 
 def move_towards_enemy(body):
     enemy = body["enemies"][0]
-    return move_towards((enemy["x"], enemy["y"], body))
+    return move_towards((enemy["x"], enemy["y"]), body)
 
 
 
@@ -221,23 +251,23 @@ def rotate_towards_enemy(body):
     if you["x"] > enemy["x"]:
         if you["y"] > enemy["y"]:
             possibleMoves = (GET_LEFT[you["direction"]], ROTATE_UP[you["direction"]])
-            if enemy["direction"] == "bottom":
+            if enemy["direction"] == "bottom" or enemy["direction"] == "top":
                 return possibleMoves[0]
             return possibleMoves[1]
         else:
             possibleMoves = (GET_LEFT[you["direction"]], ROTATE_DOWN[you["direction"]])
-            if enemy["direction"] == "top":
+            if enemy["direction"] == "top" or enemy["direction"] == "bottom":
                 return possibleMoves[0]
             return possibleMoves[1]
     else:
         if you["y"] > enemy["y"]:
             possibleMoves = (GET_RIGHT[you["direction"]], ROTATE_UP[you["direction"]])
-            if enemy["direction"] == "bottom":
+            if enemy["direction"] == "bottom" or enemy["direction"] == "top":
                 return possibleMoves[0]
             return possibleMoves[1]
         else:
             possibleMoves = (GET_RIGHT[you["direction"]], ROTATE_DOWN[you["direction"]])
-            if enemy["direction"] == "top":
+            if enemy["direction"] == "top" or enemy["direction"] == "bottom":
                 return possibleMoves[0]
             return possibleMoves[1]
 
@@ -392,4 +422,3 @@ def main():
     print(choose_penguin_action(body))
 
 
-print(main())
