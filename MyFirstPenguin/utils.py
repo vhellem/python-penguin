@@ -158,7 +158,7 @@ def random_move_without_wall(body):
     youX = body["you"]["x"]
     youY = body["you"]["y"]
     d = body["you"]["direction"]
-    x, y = body["maxWidth"]//2, body["maxHeight"]//2
+    x, y = body["mapWidth"]//2, body["mapHeight"]//2
 
     if abs(youX-x) + abs(youY-y) <= 3:
         action = ADVANCE
