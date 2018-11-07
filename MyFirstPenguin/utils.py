@@ -240,7 +240,7 @@ def enemy_is_far_away(body):
 
 def move_towards_enemy(body):
     enemy = body["enemies"][0]
-    return move_towards((enemy["x"], enemy["y"], body))
+    return move_towards((enemy["x"], enemy["y"]), body)
 
 
 

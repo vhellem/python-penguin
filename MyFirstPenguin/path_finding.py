@@ -26,13 +26,13 @@ def all_neighbours(q):
         yield ((x, y, "left"), ROTATE_LEFT)
         yield ((x, y, "right"), ROTATE_RIGHT)
     elif d == "bottom":
-        yield ((x, y-1, d), RETREAT)
         yield ((x, y+1, d), ADVANCE)
+        yield ((x, y-1, d), RETREAT)
         yield ((x, y, "left"), ROTATE_RIGHT)
         yield ((x, y, "right"), ROTATE_LEFT)
     elif d == "right":
-        yield ((x-1, y, d), RETREAT)
         yield ((x+1, y, d), ADVANCE)
+        yield ((x-1, y, d), RETREAT)
         yield ((x, y, "top"), ROTATE_LEFT)
         yield ((x, y, "bottom"), ROTATE_RIGHT)
     elif d == "left":
